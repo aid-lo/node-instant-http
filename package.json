@@ -1,0 +1,18 @@
+{
+  "name": "xpress",
+  "version": "1.0.0",
+  "description": "Set up preconfigured server instances.",
+  "type": "module",
+  "keywords": [
+
+  ],
+  "main": "index.js",
+  "author": "Aidan Loughran (https://github.com/aid-lo)",
+  "homepage": "https://github.com/aid-lo/xpress#readme",
+  "repository": "github:aid-lo/xpress",
+  "license": "UNLICENSED",
+  "private": true,
+  "dependencies": {
+
+  }
+}
