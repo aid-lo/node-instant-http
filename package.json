@@ -3,9 +3,7 @@
   "version": "1.0.0",
   "description": "Set up preconfigured server instances.",
   "type": "module",
-  "keywords": [
-
-  ],
+  "keywords": [],
   "main": "index.js",
   "author": "Aidan Loughran (https://github.com/aid-lo)",
   "homepage": "https://github.com/aid-lo/xpress#readme",
@@ -13,6 +11,8 @@
   "license": "UNLICENSED",
   "private": true,
   "dependencies": {
-
+    "dotenv": "^10.0.0",
+    "express": "^4.17.1",
+    "vhost": "^3.0.2"
   }
 }
