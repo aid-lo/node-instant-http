@@ -11,7 +11,6 @@ import vhost from 'vhost';
 export default function(config) {
 
 	config = config ?? {};
-	config.domains = config.domains ?? [];
 
 	if (Cluster.isPrimary) {
 
@@ -38,28 +37,31 @@ export default function(config) {
 
 		process.env.PORT = process.env.PORT ?? "8080";
 
-		createServer({
+		const cert = {
 			key: readFileSync(config.key).toString(),
-			cert: readFileSync(config.cert).toString(),
-			SNICallback: (domain, cb) => {
+			cert: readFileSync(config.cert).toString()
+		};
 
-				if (!config.domains.find(i => domain.match(i.host) && i.key && i.cert && check(i.key, i.cert))) cb(Error());
+		if (config.domains) cert.SNICallback = (domain, cb) => {
 
-				function check(keyPath, certPath) {
-					if (existsSync(keyPath) && existsSync(keyPath)) {
-						cb(null, createSecureContext({
-							key: readFileSync(keyPath),
-							cert: readFileSync(certPath)
-						}));
-						return true;
-					}
-					return false;
+			if (!config.domains.find(i => domain.match(i.host) && i.key && i.cert && check(i.key, i.cert))) cb(Error());
+
+			function check(keyPath, certPath) {
+				if (existsSync(keyPath) && existsSync(keyPath)) {
+					cb(null, createSecureContext({
+						key: readFileSync(keyPath),
+						cert: readFileSync(certPath)
+					}));
+					return true;
 				}
-
+				return false;
 			}
-		}, (srv => {
+		}
+
+		createServer(cert, (srv => {
 
 			srv.use((req, res, next) => {
+				console.log("test");
 				let redirect = false;
 				if (req.headers.host.slice(0, 4) === "www.") {
 					req.headers.host = req.headers.host.slice(4);
@@ -73,7 +75,7 @@ export default function(config) {
 				else next();
 	 		});
 
-			config.domains.forEach(domain => srv.use(vhost(domain.host, domain.handler)));
+			if (config.domains) config.domains.forEach(domain => srv.use(vhost(domain.host, domain.handler)));
 
 			if (config.handler) srv.use(config.handler);
 
