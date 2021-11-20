@@ -1,6 +1,3 @@
-// TODO: Node.js memory ceiling
-// TODO: allow enforce www. and enforce trailing slash to be configured on a per-domain basis
-
 import Cluster from "cluster";
 import Dotenv from "dotenv";
 import bcryptTest from "bcrypt-test";

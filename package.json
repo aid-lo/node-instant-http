@@ -1,7 +1,7 @@
 {
   "name": "xpress",
   "version": "1.0.0",
-  "description": "Set up preconfigured server instances.",
+  "description": "Quickly set up configured Node/Express server instances.",
   "type": "module",
   "keywords": [],
   "main": "index.js",
