@@ -3,25 +3,23 @@
 > Quickly set up configured Node/Express server instances.
 
 I made this module as I was using the same boilerplate code to configure my node server instances. This module can
-initialise one server, or multiple virtual hosts using different domains. Just supply configuration options and the
-module will take care of the rest.
+configure a default host, and/or multiple virtual hosts using different domains. Just supply configuration options and
+the module will take care of the rest. Nice.
+
+When running in production mode, it will automatically enable multithreading to use all available CPUs.
 
 ## Requirements
 
-- Express
-- vhost
-- dotenv
+[bcrypt-test](https://github.com/aid-lo/bcrypt-test)  - Install manually, clone or add as submodule to node_modules. Install its dependencies too.
 
-Use the following command to install them:
+Use the following command to install the required npm modules :
 
-```
-npm i express vhost dotenv
-```
+`npm i express vhost dotenv`
 
 ## Usage
 
 ```
-import xpress from "xpress";
+const xpress = require("xpress");
 
 xpress(config);
 ```
@@ -46,6 +44,13 @@ xpress(config);
 
 ## Future
 
+I want this module to be as configurable as possible.
+
+- Make https/ssl optional.
+- Make bcrypt-test optional.
 - Instruct Node to limit memory usage for low memory environments.
 - Configure www and trailing slash enforcement policy on a per-domain basis.  
   *Currently enforces no www and no trailing slash.*
+- Configurable multithreading.  
+  *Currently uses one or all threads dependent on NODE_ENV.*
+- Reduce number of dependencies.
