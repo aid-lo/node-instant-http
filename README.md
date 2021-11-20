@@ -54,3 +54,5 @@ I want this module to be as configurable as possible.
 - Configurable multithreading.  
   *Currently uses one or all threads dependent on NODE_ENV.*
 - Reduce number of dependencies.
+- Configuration loaded from JSON file.
+- Initialise through command line without script.

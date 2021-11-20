@@ -44,13 +44,13 @@ export default function(config) {
 
 		if (config.domains) cert.SNICallback = (domain, cb) => {
 
-			if (!config.domains.find(i => domain.match(i.host) && i.key && i.cert && check(i.key, i.cert))) cb(Error());
+			if (!config.domains.find(v => domain.match(v.host) && v.key && v.cert && check(v.key, v.cert))) cb();
 
 			function check(keyPath, certPath) {
 				if (existsSync(keyPath) && existsSync(keyPath)) {
 					cb(null, createSecureContext({
-						key: readFileSync(keyPath),
-						cert: readFileSync(certPath)
+						key: readFileSync(keyPath).toString(),
+						cert: readFileSync(certPath).toString()
 					}));
 					return true;
 				}
@@ -61,7 +61,6 @@ export default function(config) {
 		createServer(cert, (srv => {
 
 			srv.use((req, res, next) => {
-				console.log("test");
 				let redirect = false;
 				if (req.headers.host.slice(0, 4) === "www.") {
 					req.headers.host = req.headers.host.slice(4);
