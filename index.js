@@ -1,12 +1,12 @@
 import Cluster from "cluster";
 import Dotenv from "dotenv";
-import bcryptTest from "bcrypt-test";
+import bcryptTest from "bcrypt-bench";
 import {cpus} from "os";
 import {createServer} from "https";
 import {existsSync, readFileSync} from "fs";
-import {createSecureContext} from 'tls';
-import Express from 'express';
-import vhost from 'vhost';
+import {createSecureContext} from "tls";
+import Express from "express";
+import vhost from "vhost";
 
 export default function(config) {
 
