@@ -1,14 +1,18 @@
-import Cluster from "cluster";
-import Dotenv from "dotenv";
-import bcryptTest from "bcrypt-bench";
-import {cpus} from "os";
-import {createServer} from "https";
-import {existsSync, readFileSync} from "fs";
-import {createSecureContext} from "tls";
-import Express from "express";
-import vhost from "vhost";
+const Cluster = require("cluster");
+const Dotenv = require("dotenv");
+const bcryptTest = require("bcrypt-bench");
+const {cpus} = require("os");
+const {createServer} = require("https");
+const {existsSync, readFileSync} = require("fs");
+const {createSecureContext} = require("tls");
+const Express = require("express");
+const vhost = require("vhost");
+const {resolve} = require("path");
 
-export default function(config) {
+// To get app root folder
+//console.log(resolve(__dirname).split('/node_modules')[0]);
+
+module.exports = config => {
 
 	config = config ?? {};
 

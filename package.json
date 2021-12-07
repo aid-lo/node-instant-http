@@ -4,7 +4,6 @@
   "description": "Quickly set up configured Node/Express server instances.",
   "author": "Aidan Loughran (https://github.com/aid-lo)",
   "license": "MIT",
-  "type": "module",
   "keywords": [],
   "repository": "github:aid-lo/xpress",
   "homepage": "https://github.com/aid-lo/xpress#readme",
