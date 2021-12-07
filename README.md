@@ -49,11 +49,12 @@ xpress(config);
 
 ### Configuration
 
-|   Option   | Description
-| ---------- | -----------
-| `handler`  | The default route handler to use, such as an Express server or router. Can also specify a path string relative to the app root directory to an importable file. Not needed if using vhost setup.
-| `key`      | Path to the default SSL key file to use. If not specified, Xpress will try to find one in the app root `/` or in the `/conf` folder.
-| `cert`     | Path to the default SSL cert file to use. If not specified, Xpress will try to find one in the app root `/` or in the `/conf` folder.
+|     Option     | Description
+| -------------- | -----------
+| `handler`      | The default route handler to use, such as an Express server or router. Can also specify a path string relative to the app root directory to an importable file. Not needed if using vhost setup.
+| `key`          | Path to the default SSL key file to use. If not specified, Xpress will try to find one in the app root `/` or in the `/conf` folder.
+| `cert`         | Path to the default SSL cert file to use. If not specified, Xpress will try to find one in the app root `/` or in the `/conf` folder.
+| `bcryptBench`  | Make truthy to run bcrypt-bench
 | `domains` or `vhosts` | An optional array of objects with configuration info for each virtual host. Config options are detailed in the following table.
 
 ### vhosts Config
