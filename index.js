@@ -1,20 +1,15 @@
 const Cluster = require("cluster");
 const Dotenv = require("dotenv");
-const bcryptTest = require("bcrypt-bench");
 const {cpus} = require("os");
 const {createServer} = require("https");
 const {existsSync, readFileSync} = require("fs");
-const {createSecureContext} = require("tls");
 const Express = require("express");
 const vhost = require("vhost");
 const {resolve} = require("path");
 
-// To get app root folder
-//console.log(resolve(__dirname).split('/node_modules')[0]);
+const approot = resolve(__dirname).split('/node_modules')[0];
 
 module.exports = config => {
-
-	config = config ?? {};
 
 	if (Cluster.isPrimary) {
 
@@ -22,7 +17,7 @@ module.exports = config => {
 
 		let threads = 1;
 		if (process.env.NODE_ENV === "production") {
-			bcryptTest({quickFactor: 100});
+			if (config.bcryptBench) require("bcrypt-bench")();
 			threads = cpus().length;
 		}
 
@@ -39,22 +34,39 @@ module.exports = config => {
 		});
 	} else {
 
+		config = config ?? {};
+
 		process.env.PORT = process.env.PORT ?? "8080";
 
+		if (!config.key && !config.cert) Object.assign(config, [
+			{
+				key: approot + "/ssl.key",
+				cert: approot + "/ssl.cert"
+			},
+			{
+				key: approot + "/conf/ssl.key",
+				cert: approot + "/conf/ssl.cert"
+			}
+		].find(c => existsSync(c.key) && existsSync(c.cert)) ?? {});
+
+		if (!config.key && !config.cert) throw new Error("No default SSL certificate specified or found.");
+
 		const cert = {
-			key: readFileSync(config.key).toString(),
-			cert: readFileSync(config.cert).toString()
+			key: readFileSync(config.key, "ascii"),
+			cert: readFileSync(config.cert, "ascii")
 		};
 
-		if (config.domains) cert.SNICallback = (domain, cb) => {
+		if (config.domains && !config.vhosts) config.vhosts = config.domains;
 
-			if (!config.domains.find(v => domain.match(v.host) && v.key && v.cert && check(v.key, v.cert))) cb();
+		if (config.vhosts) cert.SNICallback = (domain, cb) => {
+
+			if (!config.vhosts.find(v => domain.match(v.host) && v.key && v.cert && check(v.key, v.cert))) cb();
 
 			function check(keyPath, certPath) {
-				if (existsSync(keyPath) && existsSync(keyPath)) {
-					cb(null, createSecureContext({
-						key: readFileSync(keyPath).toString(),
-						cert: readFileSync(certPath).toString()
+				if (existsSync(keyPath) && existsSync(certPath)) {
+					cb(null, require("tls").createSecureContext({
+						key: readFileSync(keyPath, "ascii"),
+						cert: readFileSync(certPath, "ascii")
 					}));
 					return true;
 				}
@@ -78,9 +90,9 @@ module.exports = config => {
 				else next();
 	 		});
 
-			if (config.domains) config.domains.forEach(domain => srv.use(vhost(domain.host, domain.handler)));
+			if (config.vhosts) config.vhosts.forEach(domain => srv.use(vhost(domain.host, loadHandler(domain.handler))));
 
-			if (config.handler) srv.use(config.handler);
+			if (config.handler) srv.use(loadHandler(config.handler));
 
 			srv.use((req, res) => res.status(404).send());
 
@@ -94,4 +106,13 @@ module.exports = config => {
 			return srv;
 		})(Express())).listen(process.env.PORT);
 	}
+}
+
+function loadHandler(handler) {
+	if (typeof handler === "string") {
+		if (handler.startsWith("./")) handler = handler.slice(1);
+		else if (!handler.startsWith("/")) handler = "/" + handler;
+		return require(approot + handler);
+	}
+	return handler;
 }
