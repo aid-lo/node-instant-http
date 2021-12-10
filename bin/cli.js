@@ -42,4 +42,4 @@ for (let i = 2; i < process.argv.length; i++) {
     }
 }
 
-require("../src/index")(config);
+require("../index")(config);
