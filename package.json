@@ -1,6 +1,6 @@
 {
   "name": "doji-xpress",
-  "version": "1.2.0",
+  "version": "1.2.1",
   "description": "Quickly set up configured Express instances.",
   "author": "Aidan Loughran <aidlo@protonmail.com> (https://github.com/aid-lo)",
   "license": "MIT",
@@ -11,7 +11,7 @@
   "repository": "github:aid-lo/xpress",
   "main": "index.js",
   "bin": {
-    "xpress": "cli.js"
+    "xpress": "bin/cli.js"
   },
   "dependencies": {
     "express": "^4.17.1",

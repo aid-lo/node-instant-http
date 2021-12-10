@@ -1,5 +1,9 @@
 # Changelog
 
+## 1.2.1 (10/12/2021)
+
+- Restructured code.
+
 ## 1.2.0 (10/12/2021)
 
 - Added configuration of view engine, views directory, and trust proxy.
