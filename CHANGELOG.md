@@ -1,8 +1,9 @@
 # Changelog
 
-## 1.2.1 (10/12/2021)
+## 1.3.0 (10/12/2021)
 
 - Restructured code.
+- Removed SSL requirement. Server will launch HTTP server instead if no valid SSL certificate is available.
 
 ## 1.2.0 (10/12/2021)
 
