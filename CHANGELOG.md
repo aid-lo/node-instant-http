@@ -1,5 +1,9 @@
 # Changelog
 
+## 1.3.1 (10/12/2021)
+
+- Fixed CLI
+
 ## 1.3.0 (10/12/2021)
 
 - Restructured code.
