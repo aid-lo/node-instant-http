@@ -1,5 +1,11 @@
 # Changelog
 
+## 1.2.0 (10/12/2021)
+
+- Added configuration of view engine, views directory, and trust proxy.
+- Removed Dotenv dependency. Must specify in config to run `Dotenv.config()` now.
+- Specify `--bcrypt-bench` in CLI.
+
 ## 1.1.0 (07/12/2021)
 
 - Removed `"type": "module"` from `package.json`.

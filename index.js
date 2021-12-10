@@ -1,5 +1,4 @@
 const Cluster = require("cluster");
-const Dotenv = require("dotenv");
 const {cpus} = require("os");
 const {createServer} = require("https");
 const {existsSync, readFileSync} = require("fs");
@@ -7,13 +6,13 @@ const Express = require("express");
 const vhost = require("vhost");
 const {resolve} = require("path");
 
-const approot = resolve(__dirname).split('/node_modules')[0];
+const approot = resolve(__dirname).split("/node_modules")[0];
 
 module.exports = config => {
 
 	if (Cluster.isPrimary) {
 
-		Dotenv.config();
+		if (config.dotenv) require("dotenv").config();
 
 		let threads = 1;
 		if (process.env.NODE_ENV === "production") {
@@ -26,9 +25,9 @@ module.exports = config => {
 		let running = 0;
 		for (let i = 0; i < threads; i++) Cluster.fork();
 
-		Cluster.on('exit', () => console.log("> A worker died!"));
+		Cluster.on("exit", () => console.log("> A worker died!"));
 
-		Cluster.on('listening', (worker, address) => {
+		Cluster.on("listening", (worker, address) => {
 			console.log(`  > Worker ${worker.id} [${worker.process.pid}]: Listening on port ${address.port}.`);
 			if (++running === threads) console.log("> Done.\n");
 		});
@@ -76,6 +75,15 @@ module.exports = config => {
 
 		createServer(cert, (srv => {
 
+			srv.disable("x-powered-by");
+
+			if (config.trustProxy) srv.set("trust proxy", true);
+
+			if (config.views && config.views.engine) {
+				srv.set("view engine", config.views.engine);
+				if (config.views.directory) srv.set("views", approot + "/" + config.views.directory);
+			}
+
 			srv.use((req, res, next) => {
 				let redirect = false;
 				if (req.headers.host.slice(0, 4) === "www.") {
@@ -101,8 +109,6 @@ module.exports = config => {
 				console.log(err);
 			});
 
-			srv.disable('x-powered-by');
-			srv.set('trust proxy', true);
 			return srv;
 		})(Express())).listen(process.env.PORT);
 	}
