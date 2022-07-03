@@ -20,7 +20,7 @@ for (let i = 2; i < process.argv.length; i++) switch (process.argv[i]) {
         break;
     case '-l':
     case '--listener':
-        config.listener = require(resolve(process.argv[++i]));
+        config.listener = resolve(process.argv[++i]);
         break;
     case '-k':
     case '--ssl-key':

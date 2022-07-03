@@ -1,11 +1,11 @@
 {
   "name": "node-instant-http",
-  "version": "2.0.0-PREVIEW",
+  "version": "2.0.1",
   "description": "Quickly fire up a HTTP server with Node.",
   "author": "Aidan Loughran (https://github.com/aidlran)",
   "license": "MIT",
   "keywords": [
-    "express",
+    "static-file-server",
     "webserver",
     "http",
     "cli"

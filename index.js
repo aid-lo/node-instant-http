@@ -12,7 +12,7 @@ module.exports = config =>
  * @typedef NodeInstantHTTPConfig
  * @property {boolean} [dotenv]
  * @property {number|string} [port]
- * @property {RequestListener} [listener]
+ * @property {RequestListener|string} [listener]
  * @property {number|string} [threads]
  * @property {SecureContextOptions & {keyFile:string|null} & {certFile:string|null}} [ssl]
  */

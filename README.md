@@ -37,7 +37,7 @@ http(config);
 **Configuration options:**
 
 - `dotenv`: Dotenv is automatically loaded if it is installed. Set to `false` to prevent this.
-- `listener`: A `requestListener` for the HTTP server, such as a function or an Express app.
+- `listener`: A `requestListener` (or path to one) for the HTTP server, such as a function or an Express app.
 - `port`: Port number for the server to use. Defaults to `8000`.
 - `ssl`: An object for `tls.createSecureContext`. See: [SSL configuration](#ssl).
 - `threads`: Number of threads to use. Defaults to maximum available in production mode, and `1` in all other cases.

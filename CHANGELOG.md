@@ -1,5 +1,10 @@
 # Changelog
 
+## 2.0.1 (2022-07-03)
+
+- `config.listener` may now be an import path string instead, in which case it'll be imported when it's needed.
+- Addresses problematic behaviour when importing the listener too early in `cli.js`.
+
 ## 2.0.0 (2022-07-03)
 
 - Complete rewrite, removing all dependencies and extraneous functionality. See the new [README](README.md).
