@@ -1,20 +1,21 @@
 {
-  "name": "doji-xpress",
-  "version": "1.3.2",
-  "description": "Quickly set up configured Express instances.",
-  "author": "Aidan Loughran <aidlo@protonmail.com> (https://github.com/aid-lo)",
+  "name": "node-instant-http",
+  "version": "2.0.0-PREVIEW",
+  "description": "Quickly fire up a HTTP server with Node.",
+  "author": "Aidan Loughran (https://github.com/aidlran)",
   "license": "MIT",
   "keywords": [
     "express",
-    "webserver"
+    "webserver",
+    "http",
+    "cli"
   ],
-  "repository": "github:aid-lo/xpress",
+  "repository": "github:aidlran/node-instant-http",
   "main": "index.js",
   "bin": {
-    "xpress": "bin/cli.js"
+    "node-instant-http": "bin/cli.js"
   },
-  "dependencies": {
-    "express": "^4.17.1",
-    "vhost": "^3.0.2"
+  "devDependencies": {
+    "dotenv": "latest"
   }
 }

@@ -1,21 +1,25 @@
 # Changelog
 
-## 1.3.2 (10/12/2021)
+## 2.0.0 (2022-07-03)
+
+- Complete rewrite, removing all dependencies and extraneous functionality. See the new [README](README.md).
+
+## 1.3.2 (2021-12-10)
 
 - Fixed CLI
 
-## 1.3.0 (10/12/2021)
+## 1.3.0 (2021-12-10)
 
 - Restructured code.
 - Removed SSL requirement. Server will launch HTTP server instead if no valid SSL certificate is available.
 
-## 1.2.0 (10/12/2021)
+## 1.2.0 (2021-12-10)
 
 - Added configuration of view engine, views directory, and trust proxy.
 - Removed Dotenv dependency. Must specify in config to run `Dotenv.config()` now.
 - Specify `--bcrypt-bench` in CLI.
 
-## 1.1.0 (07/12/2021)
+## 1.1.0 (2021-12-07)
 
 - Removed `"type": "module"` from `package.json`.
 - Made specifying a default SSL cert optional.
@@ -25,7 +29,7 @@
 handler function. The file must be importable by `require()`.
 - Added a command line utility to start Xpress instance.
 
-## 1.0.0 (26/11/2021)
+## 1.0.0 (2021-11-26)
 
 - Quickly setup Express server boilerplate.
 - Automatic multithreading dependent on NODE_ENV.

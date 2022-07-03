@@ -1,107 +1,123 @@
-I made this module as I was using the same boilerplate code to configure my server instances.
+# node-instant-http
 
-# Features
+This module allows you to quickly spin up a Node HTTP server programmatically or by CLI.
+~~Out of the box it works great as a simple static file server for development.~~ _(soon)_
+It can also be useful to pair with an existing server or Express app etc. to handle its clustering and SSL.
 
-- Configure an Express server with a variety of methods.
+## Features
 
+- Handles clustering/multiple threads automatically.
+- Supports SSL.
+- Attach a `requestListener` such as a function or an Express app etc.
 
-- Enforces no trailing slash and no www policies.  
-*(This is my preference but will eventually be configurable.)*
+## Installation
 
-
-- Automatically use all available CPU threads when running in production mode.  
-*(Again, will be configurable in a future version.)*
-
-
-- Specify a default route handler and SSL certificate.
-
-
-- Specify multiple vhosts, each with their own route handler and optionally their own SSL certificate.
-
-
-- Option to run [bcrypt-bench](https://www.npmjs.com/package/bcrypt-bench) when running in production mode, which will find the optimal bcrypt salt round value.
-
-
-- Command line utility.
-
-# Installation
+Install as a devDependency with NPM:
 
 ```
-npm i doji-xpress
+npm i -D github:aidlran/node-instant-http#2.x
 ```
 
-# Usage
+## Usage
 
-Xpress can be initialised in code, or by command line, so it can be used in a NPM script.
+### In Code
 
-## In Code
+The module exports a function that accepts an object for config. 
 
-```
-const xpress = require("xpress");
-const myExpressServer = require("./server.js");
-const anotherServer = require("./example.com/server.js");
+```js
+const http = require('node-instant-http');
 
 const config = {
-    handler: myExpressServer,
-    vhosts: [
-        host: /^(www\.)?example\.com$/,
-        handler: anotherServer
-    ]
-};  
+  port: 8080
+};
 
-xpress(config);
+http(config);
 ```
 
-## CLI
+**Configuration options:**
 
+- `dotenv`: Dotenv is automatically loaded if it is installed. Set to `false` to prevent this.
+- `listener`: A `requestListener` for the HTTP server, such as a function or an Express app.
+- `port`: Port number for the server to use. Defaults to `8000`.
+- `ssl`: An object for `tls.createSecureContext`. See: [SSL configuration](#ssl).
+- `threads`: Number of threads to use. Defaults to maximum available in production mode, and `1` in all other cases.
+
+### CLI
+
+```sh
+node-instant-http -p 8080 -l app.js
 ```
-xpress -h ./server.js -k ./ssl.key -c ./ssl.cert
+
+**Configuration options**
+
+Paths can be absolute or relative to the working directory.
+
+- `--listener` or `-l`: Path to a module exporting a `requestListener` for the HTTP server, such as a function or an Express app.
+- `--no-dotenv`: Dotenv is automatically loaded if it is installed. This flag will prevent that.
+- `--port [n]` or `-p [n]`: Port number for the server to use. Defaults to `8000`.
+- `--ssl`: Use `key.pem` and `cert.pem` in the current working directory.
+- `--ssl-dir [dir]`: Path to a directory containing `key.pem` and `cert.pem`.
+- `--ssl-cert [file]` or `-c [file]`: Path to the SSL certificate file.
+- `--ssl-key [file]` or `-k [file]`: Path to the SSL key file.
+- `--ssl-passphrase [string]`: Passphrase for the SSL certificate. **Not recommended - use environment variable instead.**
+- `--threads [n]` or `-t [n]`: Number of threads to use. Defaults to maximum available in production mode, and `1` in all other cases.
+
+> Note: only one of `--ssl`, `--ssl-dir`, or (`--ssl-cert` & `--ssl-key`) is needed to configure SSL.
+
+## Environment Variables
+
+Environment variables can also be used to customise the configuration.
+**In this package, environment variables will take precedence over other configuration methods and will override their values.**
+
+See: [Node.js documentation](https://nodejs.dev/learn/how-to-read-environment-variables-from-nodejs) for setting environment variables in Bash,
+and see also the [cross-env](https://www.npmjs.com/package/cross-env) package for setting them in a cross-platform friendly way.
+
+`node-instant-http` also supports the [dotenv](https://www.npmjs.com/package/dotenv) package with no extra configuration necessary.
+If installed, `dotenv` will automatically be loaded. You can use `--no-dotenv` or `dotenv: false` to prevent this.
+
+**Available variables:**
+
+- `NODE_ENV`: Set to `production` to enable production mode for this and other modules.
+- `NODE_HTTP_PORT`: Port number for the server to use. Defaults to `8000`.
+- `NODE_HTTP_SSL_CERTFILE`: Path to the SSL certificate file.
+- `NODE_HTTP_SSL_KEYFILE`: Path to the SSL key file.
+- `NODE_HTTP_SSL_PASSPHRASE`: Passphrase for the SSL certificate.
+- `NODE_HTTP_THREADS`: Number of threads to use. Defaults to maximum available in production mode, and `1` in all other cases.
+
+## SSL
+
+Enabling SSL means that the server will use `https://` **only.** `http://` will be unavailable.
+
+You'll need an SSL certificate. You can generate a self-signed certificate with `openssl`.
+
+### In Code
+
+SSL is configured in `node-instant-http` using the `ssl` config property. This is a config object for [`tls.createSecureContext`](https://nodejs.org/api/tls.html#tlscreatesecurecontextoptions),
+but with the additional properties `keyFile` and `certFile` to use, which will load the files as ASCII encoded.
+You can therefore load your SSL certificate like so:
+
+```js
+const http = require('node-instant-http');
+
+http({
+	ssl: {
+		keyFile: 'key.pem',
+		certFile: 'cert.pem',
+		passphrase: "1234" // use NODE_HTTP_SSL_PASSPHRASE instead
+	}
+});
 ```
 
-# Configuration
+### CLI
 
-## Parameters Object
+SSL can also be configured in the CLI in a similar fashion:
 
-| Option        | Description
-| :------------ | :----------
-| `handler`     | The default route handler to use, such as an Express server or router. Can also specify a path string relative to the app root directory to an importable file. Not needed if using vhost setup.
-| `key`         | Path to the default SSL key file to use. If not specified, Xpress will try to find one in the app root `/` or in the `/conf` folder.
-| `cert`        | Path to the default SSL cert file to use. If not specified, Xpress will try to find one in the app root `/` or in the `/conf` folder.
-| `bcryptBench` | Make truthy to run bcrypt-bench.
-| `dotenv`      | Make truthy to run Dotenv.
-| `domains` or `vhosts` | An optional array of objects with configuration info for each virtual host. Config options are detailed in the following table.
-| `views`       | An optional object that contains `engine` & optionally `directory` for configuring the view engine. 
-| `trustProxy`  | Specify as true to enable trust proxy.
+```sh
+node-instant-http -k key.pem -c cert.pem
+```
 
-### vhosts Config
+To make things easier, if your files follow the above naming conventions and are located in the same working directory,
+you can use `--ssl` instead. Alternatively, use `--ssl-dir [path]` if they are located in a different directory.
 
-| Option     |          | Description
-| :--------- | :------: | :----------
-| `host`     | Required | The domain name for this virtual host. Can be a string or a regular expression.
-| `handler`  | Required | The route handler to use. Can also specify a path string relative to the app root directory to an importable file.
-| `key`      |          | Path to the SSL key file to use. If not specified, the default will be used.
-| `cert`     |          | Path to the SSL cert file to use. If not specified, the default will be used.
-
-## CLI arguments
-
-| Option      | Short version | Description
-| :---------- | :-----------: | :----------
-| `--handler` |     `-h`      | The path to a file to import as the route handler.
-| `--sslkey`  |     `-k`      | Path to the default SSL key file to use. If not specified, Xpress will try to find one in the app root `/` or in the `/conf` folder.
-| `--sslcert` |     `-c`      | Path to the default SSL cert file to use. If not specified, Xpress will try to find one in the app root `/` or in the `/conf` folder.
-| `--sslfolder` |             | Path to the folder where SSL key and cert exist. Alternative to specifying key/cert separately.
-| `--view-engine` |           | A view engine to use.
-| `--views-directory` |       | A custom views directory.
-| `--trust-proxy` |           | Include to enable trust proxy.
-| `--bcrypt-bench` |          | Include to run bcrypt-bench. (Be sure to include as a dependency in your project.)
-| `--dotenv` |                | Include to run Dotenv. (Be sure to include as a dependency in your project.)
-
-## Config file
-
-Planned
-
-## Environment variables
-
-| Option | Description
-| :----- | :----------
-| `PORT` | Specify the port number to listen on.
+If your SSL certificate has a passphrase, you probably don't want it appearing in the codebase or in your Bash logs.
+Set `NODE_HTTP_SSL_PASSPHRASE` in your `.env` to avoid this (make sure to add `.env` to your `.gitignore` too).
